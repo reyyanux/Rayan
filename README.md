@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>عيد ميلاد ملاك</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;600;800&display=swap" rel="stylesheet">
+
+<style>
+body{
+  margin:0;
+  background:#fff0f8;
+  font-family:'Cairo',sans-serif;
+  overflow-x:hidden;
+  text-align:center;
+}
+
+/* صفحات */
+.page{
+  display:none;
+  padding:20px;
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+}
+
+/* كروت الأسئلة */
+.card{
+  background:white;
+  padding:30px;
+  border-radius:20px;
+  box-shadow:0 8px 30px rgba(0,0,0,0.12);
+  width:90%;
+  max-width:500px;
+}
+
+.q{
+  font-size:22px;
+  font-weight:800;
+  margin-bottom:18px;
+  color:#d7438b;
+}
+
+/* الأزرار */
+.btn{
+  display:inline-block;
+  margin:10px;
+  padding:12px 28px;
+  border-radius:30px;
+  font-weight:700;
+  text-decoration:none;
+  cursor:pointer;
+  transition:transform 0.2s;
+}
+.btn:hover{transform:scale(1.05);}
+
+.yes{background:#ff89c0;color:white;}
+.no{background:#e0e8ff;color:#1a237e;}
+
+/* صفحة المعايدة */
+.final{
+  font-size:36px;
+  font-weight:900;
+  margin-bottom:20px;
+  background:linear-gradient(90deg,#ff89c0,#ff4fa8,#ffb6d5);
+  -webkit-background-clip:text;
+  color:transparent;
+  animation: slideup 3s ease forwards;
+}
+
+/* تحريك الاسم ملاك */
+@keyframes slideup{
+  0%{opacity:0; transform:translateY(50px);}
+  100%{opacity:1; transform:translateY(0);}
+}
+
+/* نص الهدية مزخرف */
+.text{
+  font-size:18px;
+  line-height:1.8;
+  color:#4b2350;
+  background:linear-gradient(120deg,#ff89c0,#ffb6d5,#ff4fa8);
+  -webkit-background-clip:text;
+  color:transparent;
+  font-weight:600;
+  padding:10px;
+  margin-top:12px;
+}
+
+/* responsive */
+@media (max-width:420px){
+  .q{font-size:20px;}
+  .final{font-size:28px;}
+  .text{font-size:16px;}
+}
+
+</style>
+
+<script>
+// إظهار صفحة معينة
+function showPage(id){
+  document.querySelectorAll('.page').forEach(p => p.style.display='none');
+  document.getElementById(id).style.display='flex';
+}
+</script>
+</head>
+
+<body onload="showPage('p1')">
+
+<!-- PAGE 1 -->
+<div class="page" id="p1">
+  <div class="card">
+    <div class="q">هل تريدين الانضمام لقروب RİLE ؟</div>
+    <div class="btn yes" onclick="showPage('p2')">نعم</div>
+    <div class="btn no" onclick="showPage('p2')">لا</div>
+  </div>
+</div>
+
+<!-- PAGE 2 -->
+<div class="page" id="p2">
+  <div class="card">
+    <div class="q">ريان يحتاج يحكي معك بالخاص… هل تقبلين؟</div>
+    <div class="btn yes" onclick="showPage('p3')">نعم</div>
+    <div class="btn no" onclick="showPage('p3')">لا</div>
+  </div>
+</div>
+
+<!-- PAGE 3 -->
+<div class="page" id="p3">
+  <div class="card">
+    <div class="q">ريان: إنتِ طالبتيني بموضوع؟</div>
+    <div class="btn yes" onclick="showPage('final')">ارسال</div>
+  </div>
+</div>
+
+<!-- PAGE 4 – FINAL -->
+<div class="page" id="final">
+  <div class="card">
+    <div class="final">🎉 Happy Birthday Malak 🎉</div>
+    <div class="text">
+اي خويتي بدياكي بموضوع حبيت اعايدك 
+
+في شهر تمّوز كنت أقضي وقتي بلا حظ ولا فوز،
+وفجأة دخلت لعندنا بنت ساكتة، ثابتة مثل الجوز،
+شكلها هادي… صنم ناعم مثل حبّة لوز.
+
+وبعد ما دخلت صديقتها، صارت تحكي شوي شوي عند العوز،
+ومع مرور الوقت احتجتها بموضوع من غير ما يعرف حدا بجوز،
+وبلّشنا نحكي كل يوم، وكملنا ساعات نحكي بلا ما نحس بالوقت أو نمل،
+كأنها واقفة قدامي تضحك على نكات نقولها وعلى قصص نرويها.
+
+حبيت الكلام معها لدرجة صار وقتي نفسه يسمعها،
+وبيوم عيد ميلادها حبيت أفرحها:
+كل عام وانتي بخير، وعقبال المية سنة يا أحلى ملوك
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
