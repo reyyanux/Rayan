@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>هدية عيد ميلاد - نهائي</title>
+<style>
+  :root{
+    --dim-bg: rgba(0,0,0,0.7);
+    --accent-green:#4CAF50;
+    --accent-white:#ffffff;
+    --accent-gold: linear-gradient(45deg,#FFD700,#FF8C00);
+  }
+  html,body{height:100%;margin:0;padding:0;background:#000;overflow:hidden;font-family:Arial, sans-serif;color:#fff}
+  /* نجوم صغيرة */
+  .star{position:absolute;border-radius:50%;background:#fff;box-shadow:0 0 6px #fff;animation:twinkle 2s infinite alternate;pointer-events:none}
+  @keyframes twinkle{from{opacity:0.25;transform:scale(0.7)}to{opacity:1;transform:scale(1)}}
+
+  /* نجوم كبيرة */
+  .big-star{
+    position:absolute;
+    width:56px;height:56px;
+    background:radial-gradient(circle,#fff 0%,#eee 40%,#fff 100%);
+    border-radius:50%;
+    box-shadow:0 0 20px #fff,0 0 35px #fff,0 0 50px #fff;
+    cursor:pointer;
+    display:flex;align-items:center;justify-content:center;
+    z-index:50;
+  }
+  .big-star .label{font-weight:bold;font-size:20px;color:#000;text-shadow:none;pointer-events:none}
+
+  /* الشهب */
+  .shooting-star{
+    position:fixed;width:4px;height:4px;background:white;border-radius:50%;box-shadow:0 0 8px white,0 0 15px white;pointer-events:none;z-index:30;
+  }
+  .shooting-star::after{
+    content:"";position:absolute;left:0;top:50%;height:2px;background:linear-gradient(to right,rgba(255,255,255,1),transparent);transform:rotate(-35deg);
+  }
+
+  /* الحروف المتحركة */
+  .moving-letter{position:fixed;top:6%;font-size:34px;font-weight:700;color:#fff;text-shadow:0 0 12px #fff;z-index:60}
+  /* مربع الأسئلة */
+  .question-box{
+    position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);
+    background:var(--dim-bg);padding:22px 28px;border-radius:16px;text-align:center;min-width:300px;z-index:80;
+    display:none;
+  }
+  .question-box h2{margin:0 0 18px 0;font-size:20px}
+  .question-box .btn{margin:8px;padding:12px 20px;border-radius:12px;border:none;font-size:18px;cursor:pointer}
+  .btn-yes{background:var(--accent-green);color:#fff}
+  .btn-no{background:#fff;color:#000}
+  .btn-star{background:#fff;color:#000}
+
+  /* مربع الشعر / الهدية */
+  .gift-text{
+    position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);
+    width:86%;max-width:920px;max-height:72%;overflow-y:auto;
+    background:var(--dim-bg);padding:22px;border-radius:18px;text-align:center;z-index:90;display:none;
+    box-shadow:0 0 18px rgba(255,255,255,0.06);
+    line-height:1.6;white-space:pre-wrap;font-size:18px;
+  }
+  .gift-text .ryan-btn{
+    margin-top:18px;padding:14px 28px;border-radius:14px;border:none;cursor:pointer;
+    background:var(--accent-green);color:#fff;font-size:18px;box-shadow:0 6px 18px rgba(0,0,0,0.4);
+  }
+  /* صفحة ابتسمي وليك (تظهر فوق الخلفية لكن تحت gift-text) */
+  .smile-overlay{
+    position:fixed;inset:0;display:none;align-items:center;justify-content:center;
+    z-index:95;background:rgba(0,0,0,0.55);backdrop-filter: blur(2px);
+  }
+  .smile-card{
+    background:rgba(10,10,10,0.85);padding:28px;border-radius:16px;text-align:center;width:90%;max-width:540px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.7);
+  }
+  .smile-card h1{margin:0 0 12px 0;font-size:30px;color:#fff}
+  .smile-card .smile-btn{
+    margin-top:18px;padding:14px 26px;font-size:20px;border-radius:14px;border:none;cursor:pointer;
+    background:linear-gradient(45deg,#FFD700,#FF8C00);color:#fff;box-shadow:0 6px 20px rgba(255,200,50,0.12)
+  }
+
+  /* Responsive tweaks */
+  @media (max-width:420px){
+    .moving-letter{font-size:26px;top:4%}
+    .gift-text{font-size:16px;padding:18px}
+    .big-star{width:46px;height:46px}
+  }
+</style>
+</head>
+<body>
+
+<script>
+/* ---------- عناصر الخلفية (نجوم صغيرة) ---------- */
+const body = document.body;
+const W = window.innerWidth, H = window.innerHeight;
+for(let i=0;i<420;i++){
+  const s = document.createElement('div');
+  s.className='star';
+  const size = Math.random()*2+0.8;
+  s.style.width = size+'px';
+  s.style.height = size+'px';
+  s.style.left = Math.random()*W+'px';
+  s.style.top = Math.random()*H+'px';
+  s.style.opacity = (Math.random()*0.7+0.2).toFixed(2);
+  s.style.animationDuration = (Math.random()*3+1)+'s';
+  body.appendChild(s);
+}
+
+/* ---------- شهب متحركة (تصنع وتختفي) ---------- */
+function spawnMeteor(){
+  const m = document.createElement('div');
+  m.className='shooting-star';
+  const startY = Math.random()*H*0.5 + 10;
+  m.style.left = '-30px';
+  m.style.top = startY + 'px';
+  const dur = 1.2 + Math.random()*1.2;
+  // نضيف تحويل حركة عبر animate
+  m.animate([
+    { transform: 'translate(0,0)', opacity:1 },
+    { transform: `translate(${W+400}px,${Math.random()*400+200}px)`, opacity:0.15 }
+  ],{ duration: dur*1000, easing: 'linear' });
+  body.appendChild(m);
+  setTimeout(()=> m.remove(), (dur+0.2)*1000);
+}
+setInterval(spawnMeteor, 1100);
+
+/* ---------- الحروف المتحركة N İ H E L ---------- */
+const letters = ['N','İ','H','E','L'];
+letters.forEach((ltr,i)=>{
+  const el = document.createElement('div');
+  el.className='moving-letter';
+  el.textContent = ltr;
+  // توزيع بداية مختلفة لليتور
+  el.style.left = (-80 + i*80) + 'px';
+  body.appendChild(el);
+  // تحرك مستمر من يسار لليمين
+  el.animate([
+    { transform: `translateX(${ -120 }px)` },
+    { transform: `translateX(${ W+120 }px)` }
+  ],{ duration: 14000 + i*700, iterations: Infinity });
+});
+
+/* ---------- نجوم كبيرة قابلة للاختيار مع الأشعار ---------- */
+const starsData = [
+  { id:'A', left:'12%', top:'24%', poem:
+`يوم من الأيام فتحت الانستا حتى أمضي وقتي، بعد عن ساقي في الطريق إلى أحد المجموعات،
+ثم تعرفت على فتاة، حسيت أني أكرهها في البداية وسكتت حتى لا أجرحها،
+ومضى بنا الوقت حتى جمعنا القدر داخل المجموعة.
+ومع مرور الأيام، بدأت أشعر بالدفء في صحبتها،
+كأن ضوء نجمة سيرينا يملأ قلبي بالأمل والراحة،
+كل كلمة منها كانت شعاعاً يضيء يومي،
+وشيئاً فشيئاً أصبحت صديقتي المقربة،
+نجمةٌ صغيرة، لكنها تحمل في ضيائها ذكريات لا تُنسى،
+تحمل معها ضحكاتنا وساعاتنا الممتعة معاً،
+وتهدي الليل إشراقة صداقة صادقة لا ينساها القلب.` },
+  { id:'B', left:'48%', top:'22%', poem:
+`في صباح شهر مايو، استيقظت وأنا أشعر بغرابة في القلب،
+فتحت الانستا لأمضي وقتي بين المجموعات،
+ثم ظهرت ليو، كانت مختلفة، هادئة ولكنها قوية في حضورها،
+كل فعل لها كان يترك أثرًا في يومي، وكأن ضوءها يشع بين الصفحات،
+سرعان ما أصبحت رفيقتي في الفعاليات والمغامرات،
+نتشارك الضحك، ونكشف أكاذيب الآخرين، ونصنع لحظات لا تُنسى،
+نجمةٌ كبيرة، مضيئة مثل قلبها الوفي،
+تذكرني بكل تلك الأوقات الممتعة والمليئة بالحماس.` },
+  { id:'C', left:'78%', top:'20%', poem:
+`كلما اشتريت من حلويات سلورا، تذكرت أورا، صديقة بعيدة عن مدينتنا،
+كانت أول مرة أختلف معها، ولم أتوقع أن نصبح قريبين هكذا،
+مع كل لقاء، كان ضحكنا يملأ المكان، وخطواتنا تصنع ذكريات،
+نجمةٌ مشرقة، صغيرة لكنها حاضرة في كل لحظة،
+تتوهج في السماء مثل روحها المرحة،
+تذكرني باللحظات الجميلة التي جمعتنا،
+وتحمل معها دفء الصداقة والإخلاص الذي لا يزول.` }
+];
+
+starsData.forEach(s=>{
+  const el = document.createElement('div');
+  el.className='big-star';
+  el.style.left = s.left;
+  el.style.top = s.top;
+  el.dataset.id = s.id;
+  el.dataset.poem = s.poem;
+  const lbl = document.createElement('div');
+  lbl.className='label';
+  lbl.textContent = s.id;
+  el.appendChild(lbl);
+  // عند الضغط على النجمة -> إظهار شعرها + زر هدية العم ريان
+  el.addEventListener('click', ()=> {
+    openStarPoem(s.poem);
+  });
+  body.appendChild(el);
+});
+
+/* ---------- صندوق الأسئلة (الخطوات الأولى) ---------- */
+const questions = [
+  { text: "جاهزة حتى تغوصي بالاعاقات؟", buttons:[ {text:"نعم", type:'yes'}, {text:"لا", type:'no'} ] },
+  { text: "اختاري نجمة", buttons:[ {text:"A", type:'star'}, {text:"B", type:'star'}, {text:"C", type:'star'} ] }
+];
+let qIndex = 0;
+const qBox = document.createElement('div');
+qBox.className = 'question-box';
+body.appendChild(qBox);
+
+function showQuestion(i){
+  qBox.innerHTML = '';
+  if(i<0 || i>=questions.length) { qBox.style.display = 'none'; return; }
+  const q = questions[i];
+  const h = document.createElement('h2'); h.textContent = q.text;
+  qBox.appendChild(h);
+  q.buttons.forEach(b=>{
+    const btn = document.createElement('button');
+    btn.className = 'btn ' + (b.type==='yes' ? 'btn-yes' : (b.type==='star' ? 'btn-star' : 'btn-no'));
+    btn.textContent = b.text;
+    btn.onclick = ()=> {
+      // إذا زر نجمة من هنا -> نجد النجمة المطابقة ونفتح شعرها
+      if(b.type === 'star'){
+        const starObj = starsData.find(s=>s.id === b.text);
+        if(starObj) openStarPoem(starObj.poem);
+        qBox.style.display='none';
+        return;
+      }
+      // غير ذلك (نعم/لا) ننتقل للسؤال التالي
+      qIndex = i+1;
+      showQuestion(qIndex);
+    };
+    qBox.appendChild(btn);
+  });
+  qBox.style.display = 'block';
+}
+
+/* --------- صندوق الشعر (يُعاد استخدامه لكل المراحل) --------- */
+const giftBox = document.createElement('div');
+giftBox.className = 'gift-text';
+body.appendChild(giftBox);
+// زر هدية العم ريان (مخفي افتراضياً؛ يظهر فقط بعد اختيار نجمة)
+const ryanBtn = document.createElement('button');
+ryanBtn.className = 'ryan-btn';
+ryanBtn.textContent = 'هدية العم ريان';
+ryanBtn.style.display = 'none';
+ryanBtn.onclick = ()=> showSmileOverlay();
+giftBox.appendChild(ryanBtn);
+
+/* ---- دوال التحكم بالتدفق ---- */
+function openStarPoem(poem){
+  // نظف المحتوى ثم اعرض الشعر
+  giftBox.innerHTML = ''; // حذف كل المحتويات
+  const p = document.createElement('div');
+  p.textContent = poem;
+  giftBox.appendChild(p);
+  // append زر العم ريان بعد الشعر
+  giftBox.appendChild(ryanBtn);
+  ryanBtn.style.display = 'inline-block';
+  giftBox.style.display = 'flex';
+  // اخفي صندوق الاسئلة لو ظاهر
+  qBox.style.display = 'none';
+}
+
+function hideGiftBox(){
+  giftBox.style.display = 'none';
+  giftBox.innerHTML = '';
+  giftBox.appendChild(ryanBtn); // نعيد الزر لمكانه لكن مخفي افتراضياً
+  ryanBtn.style.display = 'none';
+}
+
+/* ---------- صفحة "ابتسمي وليك" (overlay) ---------- */
+const smileOverlay = document.createElement('div');
+smileOverlay.className = 'smile-overlay';
+smileOverlay.innerHTML = `
+  <div class="smile-card">
+    <h1>ابتسمي وليك</h1>
+    <div style="color:#ddd;font-size:18px;margin-top:6px">قلبك يبتسم قبل أي شيء :)</div>
+    <button class="smile-btn">لقد ابتسمت</button>
+  </div>
+`;
+body.appendChild(smileOverlay);
+smileOverlay.querySelector('.smile-btn').addEventListener('click', ()=>{
+  // عند الضغط: اغلاق الأوفرلاي وعرض شعر القمر في نفس صندوق الشعر
+  smileOverlay.style.display = 'none';
+  const moonPoem = `رغم اختيارك لنجوم السماء، أنا بختار القمر لامع مضيئ،
+عدم وجوده مسيئ، ظهوره يعم ابتسامة إنسان بريئ،
+سميته على اسم نهال، لأنه أعز صديق،
+وبيوم عيد ميلاده حبيت أفرحه بأحلى تصفيق،
+كل عام وأنتِ بخير هنال على قبال الـ100 سنة،
+ولا تنسي أهم شيء، ريان عمك.`;
+  giftBox.innerHTML = '';
+  const p = document.createElement('div'); p.textContent = moonPoem;
+  giftBox.appendChild(p);
+  giftBox.style.display = 'flex';
+});
+
+/* عند الضغط على زر العم ريان: إظهار overlay مع الحفاظ على الخلفية */
+function showSmileOverlay(){
+  smileOverlay.style.display = 'flex';
+}
+
+/* ابدأ بعرض السؤال الأول */
+showQuestion(0);
+
+/* منع التمرير الخلفي عبر لمس الشاشة (لجعل التجربة ثابتة على الهاتف) */
+window.addEventListener('touchmove', function(e){ if(giftBox.style.display==='flex' || smileOverlay.style.display==='flex') e.preventDefault(); }, {passive:false});
+
+</script>
+</body>
+</html>
